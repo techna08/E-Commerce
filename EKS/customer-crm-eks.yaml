@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: custcrm
+  namespace: book-store-ns
+
+spec:
+  selector:
+    matchLabels:
+      run: custcrm
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        run: custcrm
+
+    spec:
+      containers:
+        - name: custcrm
+
+          image: aarushis/custcrm:latest
+
+          ports:
+            - containerPort: 3002
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: custcrm
+  namespace: book-store-ns
+  labels:
+    run: custcrm
+spec:
+  ports:
+    - port: 3002
+      targetPort: 3002
+      protocol: TCP
+  selector:
+    run: custcrm
+  type: LoadBalancer

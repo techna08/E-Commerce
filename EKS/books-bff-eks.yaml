@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: bookbff
+  namespace: book-store-ns
+
+spec:
+  selector:
+    matchLabels:
+      run: bookbff
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        run: bookbff
+
+    spec:
+      containers:
+        - name: bookbff
+
+          image: aarushis/bookbff:latest
+
+          ports:
+            - containerPort: 81
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 81
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          env:
+            - name: BACKEND_HOST
+              value: booksvc
+            - name: BACKEND_PORT
+              value: "3001"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookbff
+  namespace: book-store-ns
+  labels:
+    run: bookbff
+spec:
+  ports:
+    - name: http
+      port: 81
+      targetPort: 81
+      protocol: TCP
+  selector:
+    run: bookbff
+  type: LoadBalancer

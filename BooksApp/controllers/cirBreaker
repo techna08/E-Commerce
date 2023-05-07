@@ -1,0 +1,20 @@
+let currentState = "Closed";
+const timeoutDuration = 60000;
+const getState = () => {
+  return currentState;
+};
+//Source:ChatGPT
+const statusTimer = () => {
+    setTimeout(() => {
+      setState("halfOpen");
+    }, timeoutDuration);
+  }; 
+  //Source:ChatGPT
+const setState = (status) => {
+  currentState = status;
+  if (currentState !== "Closed") {
+    statusTimer();
+  }
+};
+//Source:me
+module.exports = {  setState, statusTimer,getState };

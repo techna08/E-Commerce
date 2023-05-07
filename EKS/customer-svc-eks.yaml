@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: custsvc
+  namespace: book-store-ns
+
+spec:
+  selector:
+    matchLabels:
+      run: custsvc
+
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        run: custsvc
+
+    spec:
+      containers:
+        - name: custsvc
+
+          image: aarushis/custsvc:latest
+
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          env:
+            - name: DB_HOST
+              value: "a3-databasereplicainstance-rbpsdnwidvqt.czzteefgdzjg.us-east-1.rds.amazonaws.com"
+            - name: DB_USER
+              value: "admin"
+            - name: DB_PASSWORD
+              value: "Ipad1212"
+            - name: DB_DATABASE
+              value: "Bookstore"
+            - name: DB_PORT
+              value: "3306"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: custsvc
+  namespace: book-store-ns
+  labels:
+    run: custsvc
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    run: custsvc
+  type: LoadBalancer
