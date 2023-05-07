@@ -6,11 +6,7 @@ const mysql = require('mysql');
 const custController = require('./controllers/custController');
 
 const connection = mysql.createConnection({
-  // host: "localhost",
-  // port: "3306",
-  // user: "root",
-  // password: "Ipad@1212",
-  // database: "BookStore",
+
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   user: process.env.DB_USER,
